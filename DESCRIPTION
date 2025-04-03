@@ -43,4 +43,4 @@ Suggests:
 VignetteBuilder: knitr
 Depends: 
     R (>= 3.6.0)
-Config/testthat/edition: 2
+Config/testthat/edition: 3
