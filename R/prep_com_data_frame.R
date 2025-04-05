@@ -13,7 +13,6 @@
 #'
 
 prep_com_data_frame <- function(df) {
-
   colnames(df) <- stringr::str_to_upper(colnames(df))
 
   # cips could be 6-digit characters: if so, add the period
@@ -34,15 +33,18 @@ prep_com_data_frame <- function(df) {
   # if they do have a period, only proceed if the format isn't finished
   df <- df %>%
     separate_cip_code_into_component_parts(.data$MAJORCIP) %>%
-    dplyr::mutate(Two = add_leading_zero_to_cip_lefthand_side(.data$Two),
-    Four = adjust_cip_righthand_side_format(.data$Four),
-    MAJORCIP = join_cip_components_with_period(.data$Two, .data$Four)
+    dplyr::mutate(
+      Two = add_leading_zero_to_cip_lefthand_side(.data$Two),
+      Four = adjust_cip_righthand_side_format(.data$Four),
+      MAJORCIP = join_cip_components_with_period(.data$Two, .data$Four)
     ) %>%
     dplyr::select(-"Two", -"Four") %>%
-    dplyr::mutate(UNITID = ensure_data_is_character_type(.data$UNITID),
-                  DEGREELEVEL = ensure_data_is_character_type(.data$DEGREELEVEL))
+    dplyr::mutate(
+      UNITID = ensure_data_is_character_type(.data$UNITID),
+      DEGREELEVEL = ensure_data_is_character_type(.data$DEGREELEVEL)
+    )
 
-  if("STUDENTID" %in% colnames(df)) {
+  if ("STUDENTID" %in% colnames(df)) {
     df <- df %>%
       dplyr::mutate(STUDENTID = ensure_data_is_character_type(.data$STUDENTID))
   }
@@ -62,9 +64,11 @@ cip_code_is_valid <- function(x) {
 }
 
 add_period_to_cip_code <- function(x) {
-  gsub(pattern = "(^[0-9]{2})([0-9]{4}$)",
-       replacement = "\\1\\.\\2",
-       x)
+  gsub(
+    pattern = "(^[0-9]{2})([0-9]{4}$)",
+    replacement = "\\1\\.\\2",
+    x
+  )
 }
 
 # use when cip code is in two parts separated by a period
@@ -78,13 +82,14 @@ cip_code_has_a_period <- function(x) {
 }
 
 cip_code_does_not_have_a_period <- function(x) {
-  ! cip_code_has_a_period(x)
+  !cip_code_has_a_period(x)
 }
 
 separate_cip_code_into_component_parts <- function(x) {
-  tidyr::separate(col = x,
-                  into = c("Two", "Four"),
-                  sep = "\\."
+  tidyr::separate(
+    col = x,
+    into = c("Two", "Four"),
+    sep = "\\."
   )
 }
 
@@ -96,13 +101,13 @@ add_leading_zero_to_cip_lefthand_side <- function(x) {
 }
 
 adjust_cip_righthand_side_format <- function(x) {
-   dplyr::case_when(
-     nchar(x) == 0 ~ paste0(x, "0000"),
-     nchar(x) == 1 ~ paste0(x, "000"),
-     nchar(x) == 2 ~ paste0(x, "00"),
-     nchar(x) == 3 ~ paste0(x, "0"),
-     TRUE ~ x
-   )
+  dplyr::case_when(
+    nchar(x) == 0 ~ paste0(x, "0000"),
+    nchar(x) == 1 ~ paste0(x, "000"),
+    nchar(x) == 2 ~ paste0(x, "00"),
+    nchar(x) == 3 ~ paste0(x, "0"),
+    TRUE ~ x
+  )
 }
 
 join_cip_components_with_period <- function(p1, p2) {
