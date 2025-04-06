@@ -63,3 +63,41 @@ test_that("it handles CIP codes appropriately", {
 
   expect_equal(toString(prep_com_data_frame(com_df2)$MAJORCIP), "00.0000, 11.1111, 04.0000")
 })
+
+# tests for helper functions ----------------------------
+
+test_that("it allows cip codes that are 6 digits long with no period", {
+
+  actual <- cip_is_valid(130000)
+
+  expect_equal(actual, TRUE)
+})
+
+
+test_that("it detects cip codes that are too long", {
+
+  actual <- cip_is_valid(123456789)
+
+  expect_equal(actual, FALSE)
+})
+
+test_that("it detects cip codes that are too short", {
+
+  actual <- cip_is_valid(100)
+
+  expect_equal(actual, FALSE)
+})
+
+test_that("it detects cip codes that includes non-numeric characters", {
+
+  actual <- cip_is_valid("12AB")
+
+  expect_equal(actual, FALSE)
+})
+
+test_that("it detects cip codes that includes a period", {
+
+  actual <- cip_is_valid("22.0000")
+
+  expect_equal(actual, FALSE)
+})
