@@ -54,15 +54,42 @@ test_that("it handles CIP codes appropriately", {
                        degreelevel = 17,
                        studentid = 900)
 
-  expect_equal(toString(prep_com_data_frame(com_df)$MAJORCIP), "02.3400, 12.3400, 02.3400, 02.0000, 12.0000")
+  #expect_equal(toString(prep_com_data_frame(com_df)$MAJORCIP), "02.3400, 12.3400, 02.3400, 02.0000, 12.0000")
+  actual <- prep_com_data_frame(com_df)
 
-  com_df2 <- data.frame(unitid = 123456,
+  expect_equal(toString(actual$MAJORCIP), "02.3400, 12.3400, 02.3400, 02.0000, 12.0000")
+  expect_error(actual)
+
+  #expect_length(actual$MAJORCIP, 5)
+  #expect_contains(actual$MAJORCIP, "02.3400, 12.3400, 02.3400, 02.0000, 12.0000")
+  #expect_error(actual)
+
+  #com_df2 <- data.frame(unitid = 123456,
+  #                      majorcip = c("000000", "111111", "040000"),
+  #                      degreelevel = 7,
+  #                      studentid = 999)
+
+  #expect_equal(toString(prep_com_data_frame(com_df2)$MAJORCIP), "00.0000, 11.1111, 04.0000")
+})
+
+test_that("it handles CIP codes without a period", {
+
+  com_df <- data.frame(unitid = 123456,
                         majorcip = c("000000", "111111", "040000"),
                         degreelevel = 7,
                         studentid = 999)
 
-  expect_equal(toString(prep_com_data_frame(com_df2)$MAJORCIP), "00.0000, 11.1111, 04.0000")
+  #expect_equal(toString(prep_com_data_frame(com_df2)$MAJORCIP), "00.0000, 11.1111, 04.0000")
+
+  actual <- prep_com_data_frame(com_df)
+  expect_equal(toString(actual$MAJORCIP), "00.0000, 11.1111, 04.0000")
+  expect_error(actual)
+
+  #expect_length(actual$MAJORCIP, 3)
+  #expect_contains(actual$MAJORCIP, "00.0000, 11.1111, 04.0000")
+  #expect_error(actual)
 })
+
 
 # tests for helper functions ----------------------------
 
